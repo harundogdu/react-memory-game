@@ -11,13 +11,15 @@ type MemoryContextType = {
   setCards: React.Dispatch<React.SetStateAction<IMemoryCard[]>>;
   startGame: () => void;
   turn: number;
+  handleCardItemClick: (card: IMemoryCard) => void;
 };
 
 const initialState = {
   cards: CardArray as IMemoryCard[],
   setCards: () => {},
   startGame: () => {},
-  turn: 0
+  turn: 0,
+  handleCardItemClick: () => {}
 };
 
 const MemoryContext = createContext<MemoryContextType>(initialState);
@@ -40,6 +42,18 @@ const MemoryProvider = ({ children }: MemoryProviderType) => {
     shuffleCards();
   };
 
+  const handleCardItemClick = (card: IMemoryCard) => {
+    setCards(prevCard =>
+      prevCard.map(c => {
+        if (c.id === card.id) {
+          card.isFlipped = true;
+          return card;
+        }
+        return c;
+      })
+    );
+  };
+
   useEffect(() => {
     shuffleCards();
   }, []);
@@ -48,7 +62,8 @@ const MemoryProvider = ({ children }: MemoryProviderType) => {
     cards,
     setCards,
     startGame,
-    turn
+    turn,
+    handleCardItemClick
   };
 
   return (
