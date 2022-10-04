@@ -19,12 +19,36 @@ body {
 .app .card-container .card {
   width: 200px;
   height: 200px;
-  border-radius: 5px;
-  border: 3px solid #fff;
+  position: relative;
 }
 
 .app .card-container .card img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  border: 2px solid #fff;
+}
+
+.app .card-container .card .front {
+  position: absolute;
+  inset: 0;
+  z-index: 99;
+  transition-delay: 0.2s;
+  cursor: pointer;
+}
+
+.app .card-container .card .flipped .front {
+  transform: rotateY(90deg);
+  transition: all 0.5s ease-in-out;
+}
+
+.app .card-container .card .back {
+  transform: rotateY(90deg);
+  transition: all 0.5s ease-in-out;
+  cursor: not-allowed;
+}
+
+.app .card-container .card .flipped .back {
+  transform: rotateY(0deg);
+  transition-delay: 0.2s;
 }
