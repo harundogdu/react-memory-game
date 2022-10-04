@@ -1,5 +1,6 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
 import { IMemoryCard } from '../types/memoryCard';
+import { CardArray } from '../utils/fake_db';
 
 type MemoryProviderType = {
   children: React.ReactNode;
@@ -8,28 +9,46 @@ type MemoryProviderType = {
 type MemoryContextType = {
   cards: IMemoryCard[];
   setCards: React.Dispatch<React.SetStateAction<IMemoryCard[]>>;
+  startGame: () => void;
+  turn: number;
 };
 
 const initialState = {
-    cards: [
-        {image : '/img/helmet.png', isFlipped: false, isMatched: false, name : 'Helmet'},
-        {image : '/img/potion.png', isFlipped: false, isMatched: false, name : 'Potion'},
-        {image : '/img/scroll.png', isFlipped: false, isMatched: false, name : 'Scroll'},
-        {image : '/img/sword.png', isFlipped: false, isMatched: false, name : 'Sword'},
-        {image : '/img/ring.png', isFlipped: false, isMatched: false, name : 'Ring'},
-        {image : '/img/shield.png', isFlipped: false, isMatched: false, name : 'Shield'}
-    ] as IMemoryCard[],
-    setCards: () => {}
-}
+  cards: CardArray as IMemoryCard[],
+  setCards: () => {},
+  startGame: () => {},
+  turn: 0
+};
 
 const MemoryContext = createContext<MemoryContextType>(initialState);
 
 const MemoryProvider = ({ children }: MemoryProviderType) => {
   const [cards, setCards] = useState<IMemoryCard[]>(initialState.cards);
+  const [turn, setTurn] = useState<number>(initialState.turn);
+
+  const shuffleCards = () => {
+    const shuffledCards = [...CardArray, ...CardArray]
+      .sort(() => Math.random() - 0.5)
+      .map(card => {
+        return { ...card, id: Math.random() };
+      });
+
+    setCards(shuffledCards);
+  };
+
+  const startGame = () => {
+    shuffleCards();
+  };
+
+  useEffect(() => {
+    shuffleCards();
+  }, []);
 
   const value = {
     cards,
-    setCards
+    setCards,
+    startGame,
+    turn
   };
 
   return (
@@ -38,11 +57,11 @@ const MemoryProvider = ({ children }: MemoryProviderType) => {
 };
 
 const useMemoryCards = () => {
-    const context = useContext(MemoryContext);
-    if (context === undefined) {
-        throw new Error('useMemoryCards must be used within a MemoryProvider');
-    }
-    return context;
-}
+  const context = useContext(MemoryContext);
+  if (context === undefined) {
+    throw new Error('useMemoryCards must be used within a MemoryProvider');
+  }
+  return context;
+};
 
 export { MemoryContext, MemoryProvider, useMemoryCards };
