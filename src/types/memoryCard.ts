@@ -1,4 +1,4 @@
-export interface IMemoryCard {
+export type IMemoryCard = {
     id?: number;
     image: string;
     name: string;

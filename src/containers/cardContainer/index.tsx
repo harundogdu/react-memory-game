@@ -4,11 +4,11 @@ import { useMemoryCards } from '../../contexts/memoryContext';
 
 const CardContainer = () => {
   const { cards, setCards } = useMemoryCards();
-
+  console.log(cards)
   return (
     <div className='card-container'>
-      {cards.map(card => (
-        <Card card={card} key={card.id} />
+      {cards.map((card, index) => (
+        <Card card={card} key={card?.id || index} />
       ))}
     </div>
   );
