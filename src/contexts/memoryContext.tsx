@@ -13,6 +13,7 @@ type MemoryContextType = {
   turn: number;
   handleCardItemClick: (card: IMemoryCard) => void;
   disabledCards: boolean;
+  checkWin: () => boolean;
 };
 
 const initialState = {
@@ -21,7 +22,8 @@ const initialState = {
   startGame: () => {},
   turn: 0,
   handleCardItemClick: () => {},
-  disabledCards: false
+  disabledCards: false,
+  checkWin: () => false
 };
 
 const MemoryContext = createContext<MemoryContextType>(initialState);
@@ -32,6 +34,11 @@ const MemoryProvider = ({ children }: MemoryProviderType) => {
   const [choiceOne, setChoiceOne] = useState<IMemoryCard | null>(null);
   const [choiceTwo, setChoiceTwo] = useState<IMemoryCard | null>(null);
   const [disabledCards, setDisabledCards] = useState<boolean>(false);
+
+  const checkWin = () => {
+    const isWin = cards.every(card => card.isMatched);
+    return isWin;
+  };
 
   /**
    * @description
@@ -47,17 +54,6 @@ const MemoryProvider = ({ children }: MemoryProviderType) => {
       });
 
     setCards(shuffledCards);
-  };
-
-  /**
-   * @description
-   * This function is used to start the game
-   * It shuffles the cards and sets the turn to 0
-   * @returns void
-   */
-  const startGame = () => {
-    shuffleCards();
-    setTurn(0);
   };
 
   /**
@@ -92,6 +88,17 @@ const MemoryProvider = ({ children }: MemoryProviderType) => {
     setChoiceTwo(null);
     setTurn(prevTurn => prevTurn + 1);
     setDisabledCards(false);
+  };
+
+  /**
+   * @description
+   * This function is used to start the game
+   * It shuffles the cards and sets the turn to 0
+   * @returns void
+   */
+  const startGame = () => {
+    shuffleCards();
+    setTurn(0);
   };
 
   /**
@@ -144,7 +151,8 @@ const MemoryProvider = ({ children }: MemoryProviderType) => {
     startGame,
     turn,
     handleCardItemClick,
-    disabledCards
+    disabledCards,
+    checkWin
   };
 
   return (
